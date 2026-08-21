@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::inertia('/', 'guest/home')->name('home');
 // Route::get('/login', fn () => redirect()->to(url('/')))->name('login');
 
 /*
