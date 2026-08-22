@@ -4,7 +4,6 @@ import {
     Facebook,
     Instagram,
     Linkedin,
-    Mail,
     Menu,
     X,
     Youtube,
@@ -12,57 +11,40 @@ import {
 import { useEffect, useState } from 'react';
 import { NavbarNavItem } from '@/components/navbar-nav-item';
 import type { NavbarNavigationItem } from '@/components/navbar-nav-item';
+import { NavbarTopBar } from '@/components/navbar-top-bar';
 import { Button } from '@/components/ui/button';
 
+const COMPANY_EMAIL = 'semestabangkitabadi@gmail.com';
+
+// NOTE: dropdown "Layanan" belum diaktifkan — nav-nya masih flat sampai
+// halaman/section detail masing-masing layanan siap.
 const navigationItems: NavbarNavigationItem[] = [
     { label: 'Beranda', href: '/' },
     { label: 'Tentang Kami', href: '#tentang-kami' },
-    {
-        label: 'Layanan',
-        href: '#layanan-kami',
-        // children: [
-        //     { label: 'Transportasi Darat', href: '#transportasi-darat' },
-        //     { label: 'Distribusi Logistik', href: '#distribusi-logistik' },
-        //     { label: 'Pergudangan', href: '#pergudangan' },
-        // ],
-    },
+    { label: 'Layanan', href: '#layanan-kami', children: [{ label: 'Transportasi Darat', href: '#transportasi-darat' }, { label: 'Distribusi Logistik', href: '#distribusi-logistik' }, { label: 'Pergudangan', href: '#pergudangan' }] },
     { label: 'Galeri', href: '#galeri' },
     { label: 'Hubungi Kami', href: '#hubungi-kami' },
 ];
 
 const socialMediaItems = [
-    {
-        label: 'Instagram SBA Logistik',
-        href: 'https://www.instagram.com/',
-        icon: Instagram,
-    },
-    {
-        label: 'Facebook SBA Logistik',
-        href: 'https://www.facebook.com/',
-        icon: Facebook,
-    },
-    {
-        label: 'YouTube SBA Logistik',
-        href: 'https://www.youtube.com/',
-        icon: Youtube,
-    },
-    {
-        label: 'LinkedIn SBA Logistik',
-        href: 'https://www.linkedin.com/',
-        icon: Linkedin,
-    },
+    { label: 'Instagram SBA Logistik', href: 'https://www.instagram.com/', icon: Instagram },
+    { label: 'Facebook SBA Logistik', href: 'https://www.facebook.com/', icon: Facebook },
+    { label: 'YouTube SBA Logistik', href: 'https://www.youtube.com/', icon: Youtube },
+    { label: 'LinkedIn SBA Logistik', href: 'https://www.linkedin.com/', icon: Linkedin },
 ];
+
+function getNavigationItemClassName(isActive: boolean) {
+    return `h-auto rounded-none px-0 py-0 text-sm font-semibold uppercase hover:bg-transparent hover:text-sba-secondary focus-visible:border-sba-secondary focus-visible:ring-sba-secondary/30 has-[>svg]:px-0 ${
+        isActive ? 'text-sba-secondary' : 'text-slate-800'
+    }`;
+}
 
 export default function Navbar() {
     const { url } = usePage();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [activeHash, setActiveHash] = useState('');
-    const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(
-        null,
-    );
-    const [openDesktopDropdown, setOpenDesktopDropdown] = useState<
-        string | null
-    >(null);
+    const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
+    const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(null);
 
     useEffect(() => {
         const updateActiveHash = () => setActiveHash(window.location.hash);
@@ -84,70 +66,12 @@ export default function Navbar() {
         );
     };
 
-    const navigationItemClassName = (isActive: boolean) =>
-        `h-auto rounded-none px-0 py-0 text-sm font-semibold uppercase hover:bg-transparent hover:text-sba-secondary focus-visible:border-sba-secondary focus-visible:ring-sba-secondary/30 ${
-            isActive ? 'text-sba-secondary' : 'text-slate-800'
-        }`;
-
-    const selectNavigationItem = (href: string) => {
-        setActiveHash(href.startsWith('#') ? href : '');
-    };
-
     return (
         <header className="sticky top-0 z-50 w-full border-b-4 border-sba-secondary bg-white shadow-sm">
-            <div className="bg-sba-primary text-white">
-                <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-5 lg:px-8">
-                    <a
-                        href="mailto:semestabangkitabadi@gmail.com"
-                        className="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                    >
-                        <Mail className="size-4" aria-hidden="true" />
-                        <span>semestabangkitabadi@gmail.com</span>
-                    </a>
-
-                    <div className="flex items-center gap-1">
-                        {socialMediaItems.map((item) => {
-                            const Icon = item.icon;
-
-                            return (
-                                <Button
-                                    key={item.label}
-                                    asChild
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-8 rounded-none text-white hover:bg-white/10 hover:text-white focus-visible:border-white focus-visible:ring-white/50"
-                                >
-                                    <a
-                                        href={item.href}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        aria-label={item.label}
-                                    >
-                                        <Icon
-                                            className="size-4"
-                                            aria-hidden="true"
-                                        />
-                                    </a>
-                                </Button>
-                            );
-                        })}
-                        {/* <button
-                            type="button"
-                            aria-label="Cari di situs"
-                            className="inline-flex size-8 items-center justify-center transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                        >
-                            <Search className="size-5" aria-hidden="true" />
-                        </button> */}
-                    </div>
-                </div>
-            </div>
+            <NavbarTopBar email={COMPANY_EMAIL} socialMediaItems={socialMediaItems} />
 
             <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-5 lg:px-8">
-                <a
-                    href="/"
-                    aria-label="SBA Logistik - Beranda"
-                    className="shrink-0"
-                >
+                <a href="/" aria-label="SBA Logistik - Beranda" className="shrink-0">
                     <img
                         src="/assets/logo/logo-sba-full.png"
                         alt="SBA Logistik"
@@ -157,22 +81,18 @@ export default function Navbar() {
 
                 <nav aria-label="Navigasi utama" className="hidden lg:block">
                     <ul className="flex items-center gap-8">
-                        {navigationItems.map((item) => {
-                            const isActive = isNavigationItemActive(item);
-
-                            return (
-                                <NavbarNavItem
-                                    key={item.label}
-                                    item={item}
-                                    isOpen={openDesktopDropdown === item.label}
-                                    onOpenChange={setOpenDesktopDropdown}
-                                    onSelect={selectNavigationItem}
-                                    className={navigationItemClassName(
-                                        isActive,
-                                    )}
-                                />
-                            );
-                        })}
+                        {navigationItems.map((item) => (
+                            <NavbarNavItem
+                                key={item.href}
+                                item={item}
+                                isOpen={openDesktopDropdown === item.label}
+                                onOpenChange={setOpenDesktopDropdown}
+                                onSelect={() => {}}
+                                className={getNavigationItemClassName(
+                                    isNavigationItemActive(item),
+                                )}
+                            />
+                        ))}
                     </ul>
                 </nav>
 
@@ -182,9 +102,7 @@ export default function Navbar() {
                     size="icon"
                     aria-expanded={isMobileMenuOpen}
                     aria-controls="mobile-navigation"
-                    aria-label={
-                        isMobileMenuOpen ? 'Tutup navigasi' : 'Buka navigasi'
-                    }
+                    aria-label={isMobileMenuOpen ? 'Tutup navigasi' : 'Buka navigasi'}
                     onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
                     className="size-10 rounded-none text-slate-800 hover:bg-transparent hover:text-sba-secondary focus-visible:border-sba-secondary focus-visible:ring-sba-secondary/30 lg:hidden"
                 >
@@ -204,29 +122,24 @@ export default function Navbar() {
                 >
                     <ul className="mx-auto max-w-7xl divide-y divide-slate-100">
                         {navigationItems.map((item) => {
-                            const isExpanded =
-                                expandedMobileItem === item.label;
+                            const isExpanded = expandedMobileItem === item.label;
                             const isActive = isNavigationItemActive(item);
 
                             return (
-                                <li key={item.label}>
+                                <li key={item.href}>
                                     {item.children ? (
                                         <>
                                             <Button
                                                 type="button"
                                                 variant="ghost"
-                                                className={`h-auto w-full justify-between rounded-none px-0 py-3 text-sm font-semibold uppercase hover:bg-transparent hover:text-sba-secondary ${
-                                                    isActive
-                                                        ? 'text-sba-secondary'
-                                                        : 'text-slate-800'
+                                                className={`h-auto w-full justify-between rounded-none px-0 py-3 text-sm font-semibold uppercase hover:bg-transparent hover:text-sba-secondary has-[>svg]:px-0 ${
+                                                    isActive ? 'text-sba-secondary' : 'text-slate-800'
                                                 }`}
                                                 aria-expanded={isExpanded}
                                                 aria-controls={`mobile-submenu-${item.label}`}
                                                 onClick={() =>
                                                     setExpandedMobileItem(
-                                                        isExpanded
-                                                            ? null
-                                                            : item.label,
+                                                        isExpanded ? null : item.label,
                                                     )
                                                 }
                                             >
@@ -241,42 +154,25 @@ export default function Navbar() {
                                                     id={`mobile-submenu-${item.label}`}
                                                     className="border-t border-slate-100 bg-slate-50 px-4"
                                                 >
-                                                    {item.children.map(
-                                                        (child) => (
-                                                            <li
-                                                                key={
-                                                                    child.label
-                                                                }
+                                                    {item.children.map((child) => (
+                                                        <li key={child.href}>
+                                                            <Button
+                                                                asChild
+                                                                variant="ghost"
+                                                                className="h-auto w-full justify-start rounded-none px-0 py-3 text-sm font-medium text-slate-700 hover:bg-transparent hover:text-sba-secondary"
                                                             >
-                                                                <Button
-                                                                    asChild
-                                                                    variant="ghost"
-                                                                    className="h-auto w-full justify-start rounded-none px-0 py-3 text-sm font-medium text-slate-700 hover:bg-transparent hover:text-sba-secondary"
+                                                                <a
+                                                                    href={child.href}
+                                                                    onClick={() => {
+                                                                        setIsMobileMenuOpen(false);
+                                                                        setExpandedMobileItem(null);
+                                                                    }}
                                                                 >
-                                                                    <a
-                                                                        href={
-                                                                            child.href
-                                                                        }
-                                                                        onClick={() => {
-                                                                            selectNavigationItem(
-                                                                                child.href,
-                                                                            );
-                                                                            setIsMobileMenuOpen(
-                                                                                false,
-                                                                            );
-                                                                            setExpandedMobileItem(
-                                                                                null,
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            child.label
-                                                                        }
-                                                                    </a>
-                                                                </Button>
-                                                            </li>
-                                                        ),
-                                                    )}
+                                                                    {child.label}
+                                                                </a>
+                                                            </Button>
+                                                        </li>
+                                                    ))}
                                                 </ul>
                                             )}
                                         </>
@@ -285,19 +181,12 @@ export default function Navbar() {
                                             asChild
                                             variant="ghost"
                                             className={`h-auto w-full justify-start rounded-none px-0 py-3 text-sm font-semibold uppercase hover:bg-transparent hover:text-sba-secondary ${
-                                                isActive
-                                                    ? 'text-sba-secondary'
-                                                    : 'text-slate-800'
+                                                isActive ? 'text-sba-secondary' : 'text-slate-800'
                                             }`}
                                         >
                                             <a
                                                 href={item.href}
-                                                onClick={() => {
-                                                    selectNavigationItem(
-                                                        item.href,
-                                                    );
-                                                    setIsMobileMenuOpen(false);
-                                                }}
+                                                onClick={() => setIsMobileMenuOpen(false)}
                                             >
                                                 {item.label}
                                             </a>

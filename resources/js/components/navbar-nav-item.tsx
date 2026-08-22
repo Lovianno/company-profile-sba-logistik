@@ -1,5 +1,7 @@
 import { ChevronDown } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { slugify } from '@/lib/slugify';
 
 export type NavbarNavigationItem = {
     label: string;
@@ -15,6 +17,8 @@ type NavbarNavItemProps = {
     className: string;
 };
 
+const CLOSE_DELAY_MS = 150;
+
 export function NavbarNavItem({
     item,
     isOpen,
@@ -22,6 +26,55 @@ export function NavbarNavItem({
     onSelect,
     className,
 }: NavbarNavItemProps) {
+    const itemRef = useRef<HTMLLIElement>(null);
+    const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const submenuId = `desktop-submenu-${slugify(item.label)}`;
+
+    const cancelScheduledClose = () => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+    };
+
+    const scheduleClose = () => {
+        cancelScheduledClose();
+        closeTimeoutRef.current = setTimeout(() => {
+            onOpenChange(null);
+        }, CLOSE_DELAY_MS);
+    };
+
+    // Tutup saat klik di luar atau tekan Escape (tetap dibutuhkan untuk
+    // kasus dropdown terbuka lewat keyboard focus, bukan cuma hover).
+    useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (!itemRef.current?.contains(event.target as Node)) {
+                onOpenChange(null);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onOpenChange(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen, onOpenChange]);
+
+    // Bersihkan timeout yang masih pending kalau komponen unmount.
+    useEffect(() => cancelScheduledClose, []);
+
     if (!item.children) {
         return (
             <li>
@@ -36,39 +89,45 @@ export function NavbarNavItem({
 
     return (
         <li
+            ref={itemRef}
             className="relative"
-            onPointerEnter={() => onOpenChange(item.label)}
-            onPointerLeave={() => onOpenChange(null)}
-            onFocus={() => onOpenChange(item.label)}
-            onBlur={(event) => {
-                if (!event.currentTarget.contains(event.relatedTarget)) {
-                    onOpenChange(null);
-                }
+            onPointerEnter={() => {
+                cancelScheduledClose();
+                onOpenChange(item.label);
             }}
+            onPointerLeave={scheduleClose}
         >
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                aria-expanded={isOpen}
-                aria-controls={`desktop-submenu-${item.label}`}
-                onClick={() => onOpenChange(isOpen ? null : item.label)}
-                className={className}
-            >
-                {item.label}
-                <ChevronDown
-                    className={`size-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                    aria-hidden="true"
-                />
+            <Button asChild variant="ghost" size="sm" className={className}>
+                <a
+                    href={item.href}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                    aria-controls={submenuId}
+                    onFocus={() => {
+                        cancelScheduledClose();
+                        onOpenChange(item.label);
+                    }}
+                    onClick={() => onSelect(item.href)}
+                >
+                    {item.label}
+                    <ChevronDown
+                        className={`size-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                        aria-hidden="true"
+                    />
+                </a>
             </Button>
             {isOpen && (
-                <div className="absolute top-full left-0 z-50 pt-3">
+                <div
+                    className="absolute top-full left-0 z-50 pt-3"
+                    onPointerEnter={cancelScheduledClose}
+                    onPointerLeave={scheduleClose}
+                >
                     <ul
-                        id={`desktop-submenu-${item.label}`}
+                        id={submenuId}
                         className="min-w-52 border border-slate-200 bg-white p-1 shadow-lg"
                     >
                         {item.children.map((child) => (
-                            <li key={child.label}>
+                            <li key={child.href}>
                                 <Button
                                     asChild
                                     variant="ghost"
@@ -76,7 +135,10 @@ export function NavbarNavItem({
                                 >
                                     <a
                                         href={child.href}
-                                        onClick={() => onSelect(child.href)}
+                                        onClick={() => {
+                                            onSelect(child.href);
+                                            onOpenChange(null);
+                                        }}
                                     >
                                         {child.label}
                                     </a>

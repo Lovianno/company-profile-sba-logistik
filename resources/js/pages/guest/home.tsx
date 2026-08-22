@@ -4,14 +4,18 @@ import {
     Box,
     Clock3,
     MapPinned,
-    ShieldCheck,
+    Plane,
+    Ship,
     Truck,
 } from 'lucide-react';
+import HeroCarousel from '@/components/hero-carousel';
+import HighlightsSection from '@/components/highlights-section';
+import ServicesCarousel from '@/components/services-carousel';
 import { Button } from '@/components/ui/button';
 
 const services = [
     {
-        title: 'Transportasi Darat',
+        title: 'Freight Darat',
         description:
             'Pengiriman antarkota dengan armada yang siap mendukung kebutuhan bisnis.',
         icon: Truck,
@@ -23,6 +27,18 @@ const services = [
         icon: MapPinned,
     },
     {
+        title: 'Freight Laut',
+        description:
+            'Pengiriman kargo melalui jalur laut untuk kebutuhan antarpulau dan volume besar.',
+        icon: Ship,
+    },
+    {
+        title: 'Freight Udara',
+        description:
+            'Solusi pengiriman cepat untuk barang prioritas dengan waktu tempuh lebih singkat.',
+        icon: Plane,
+    },
+    {
         title: 'Pergudangan',
         description:
             'Ruang penyimpanan yang membantu proses logistik tetap terorganisasi.',
@@ -31,7 +47,7 @@ const services = [
 ];
 
 const highlights = [
-    { value: '10+', label: 'Tahun pengalaman' },
+    { value: '5+', label: 'Tahun pengalaman' },
     { value: '250+', label: 'Mitra pengiriman' },
     { value: '34', label: 'Wilayah layanan' },
     { value: '24/7', label: 'Dukungan operasional' },
@@ -42,76 +58,59 @@ export default function HomePage() {
         <>
             <Head title="Beranda" />
 
-            <section className="relative isolate min-h-150 overflow-hidden bg-sba-primary text-white">
-                <img
-                    src="/assets/images/logistics-hero.png"
-                    alt="Armada truk dan kontainer di area logistik"
-                    className="absolute inset-0 -z-20 size-full object-cover"
-                />
-                <div className="absolute inset-0 -z-10 bg-sba-primary/80" />
-                <div className="absolute inset-0 -z-10 bg-linear-to-r from-sba-primary via-sba-primary/80 to-sba-primary/20" />
+            <HeroCarousel />
 
-                <div className="mx-auto flex min-h-150 max-w-7xl items-center px-5 py-20 sm:px-8">
-                    <div className="max-w-2xl">
-                        <p className="text-sm font-semibold tracking-[0.18em] text-sba-secondary uppercase">
-                            Solusi logistik terpercaya
-                        </p>
-                        <h1 className="mt-5 text-4xl leading-tight font-bold sm:text-5xl lg:text-6xl">
-                            SBA Logistik
-                        </h1>
-                        <p className="mt-5 max-w-xl text-base leading-8 text-white/80 sm:text-lg">
-                            Menghubungkan bisnis Anda dengan layanan
-                            transportasi dan distribusi yang terukur, aman, dan
-                            tepat waktu.
-                        </p>
-                        <div className="mt-8 flex flex-wrap gap-3">
-                            <Button
-                                asChild
-                                variant="sbaSecondary"
-                                size="lg"
-                                className="rounded-md"
-                            >
-                                <a href="#hubungi-kami">
-                                    Hubungi Kami
-                                    <ArrowRight aria-hidden="true" />
-                                </a>
-                            </Button>
-                            <Button
-                                asChild
-                                variant="outline"
-                                size="lg"
-                                className="rounded-md border-white/50 bg-transparent text-white hover:border-white hover:bg-white hover:text-sba-primary"
-                            >
-                                <a href="#layanan-kami">Lihat Layanan</a>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tentang-kami" className="bg-white py-18">
-                <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_1.15fr] lg:items-center">
-                    <div>
+            <section id="tentang-kami" className="bg-white py-20">
+                <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.2fr] lg:items-start">
+                    <div className="lg:sticky lg:top-36">
                         <p className="text-sm font-semibold tracking-[0.18em] text-sba-secondary uppercase">
                             Tentang kami
                         </p>
-                        <h2 className="mt-4 text-3xl font-bold text-sba-primary sm:text-4xl">
-                            Logistik yang bergerak bersama bisnis Anda.
+                        <h2 className="mt-4 max-w-xl text-3xl leading-tight font-bold text-sba-primary sm:text-4xl">
+                            Solusi Logistik Terpadu untuk Mendukung Akselerasi
+                            Bisnis Anda.
                         </h2>
-                    </div>
-                    <div className="border-l-4 border-sba-secondary pl-6">
-                        <p className="text-base leading-8 text-slate-600">
-                            Ini adalah konten dummy untuk melihat komposisi
-                            halaman. Nantinya bagian ini dapat berisi profil,
-                            nilai perusahaan, dan pendekatan layanan SBA
-                            Logistik.
+
+                        <p className="mt-5 max-w-lg text-base leading-8 text-slate-600">
+                            Kami menangani seluruh proses pengiriman Anda, serta
+                            memastikan setiap tahapan berjalan lancar dengan
+                            dijemput tepat waktu, disimpan dengan aman, hingga
+                            tiba di tujuan
                         </p>
-                        <div className="mt-6 flex items-center gap-3 text-sm font-semibold text-sba-primary">
-                            <ShieldCheck
-                                className="size-5 text-sba-secondary"
-                                aria-hidden="true"
-                            />
-                            Mitra operasional yang dapat diandalkan
+                    </div>
+
+                    <div className="border-l-4 border-sba-secondary bg-sba-primary px-6 py-7 sm:px-8 sm:py-9">
+                        <p className="text-lg leading-9 text-white">
+                            Layanan terintegrasi mulai dari freight forwarding
+                            laut, darat dan udara yang didukung oleh pilihan
+                            lengkap armada transportasi darat dan spesialisasi
+                            dalam menangani kargo yang membutuhkan penanganan
+                            khusus.
+                        </p>
+
+                        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                            {[
+                                { label: 'Darat', icon: Truck },
+                                { label: 'Laut', icon: Ship },
+                                { label: 'Udara', icon: Plane },
+                            ].map((item) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <div
+                                        key={item.label}
+                                        className="flex items-center gap-3 border border-slate-200 bg-white px-4 py-3 md:justify-center lg:justify-center"
+                                    >
+                                        <Icon
+                                            className="size-5 shrink-0 text-sba-secondary"
+                                            aria-hidden="true"
+                                        />
+                                        <span className="text-sm font-semibold text-sba-primary">
+                                            {item.label}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -119,59 +118,24 @@ export default function HomePage() {
 
             <section id="layanan-kami" className="bg-slate-50 py-18">
                 <div className="mx-auto max-w-7xl px-5 sm:px-8">
-                    <div className="max-w-2xl">
+                    <div className="mx-auto max-w-3xl text-center">
                         <p className="text-sm font-semibold tracking-[0.18em] text-sba-secondary uppercase">
                             Layanan kami
                         </p>
-                        <h2 className="mt-4 text-3xl font-bold text-sba-primary sm:text-4xl">
+                        <h2 className="mt-4 text-3xl leading-tight font-bold text-sba-primary sm:text-4xl">
                             Dukungan di setiap tahap perjalanan logistik.
                         </h2>
+                        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600">
+                            Pilih layanan yang sesuai dengan kebutuhan
+                            pengiriman, distribusi, dan penyimpanan barang
+                            bisnis Anda.
+                        </p>
                     </div>
-                    <div className="mt-10 grid gap-5 md:grid-cols-3">
-                        {services.map((service) => {
-                            const Icon = service.icon;
-
-                            return (
-                                <article
-                                    key={service.title}
-                                    id={service.title
-                                        .toLowerCase()
-                                        .replaceAll(' ', '-')}
-                                    className="border border-slate-200 bg-white p-7 transition-shadow hover:shadow-lg"
-                                >
-                                    <div className="flex size-11 items-center justify-center bg-sba-primary text-white">
-                                        <Icon
-                                            className="size-5"
-                                            aria-hidden="true"
-                                        />
-                                    </div>
-                                    <h3 className="mt-6 text-xl font-bold text-sba-primary">
-                                        {service.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                                        {service.description}
-                                    </p>
-                                </article>
-                            );
-                        })}
-                    </div>
+                    <ServicesCarousel services={services} />
                 </div>
             </section>
 
-            <section className="bg-sba-primary py-14 text-white">
-                <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
-                    {highlights.map((highlight) => (
-                        <div key={highlight.label}>
-                            <p className="text-3xl font-bold text-sba-secondary">
-                                {highlight.value}
-                            </p>
-                            <p className="mt-2 text-sm text-white/75">
-                                {highlight.label}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            <HighlightsSection highlights={highlights} />
 
             <section id="galeri" className="bg-white py-18">
                 <div className="mx-auto max-w-7xl px-5 sm:px-8">
